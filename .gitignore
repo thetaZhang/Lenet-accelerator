@@ -1,0 +1,17 @@
+work
+*.ini
+*.wlf
+transcript
+*.out
+build
+
+
+*.pyc
+
+.vscode
+
+*.vsdx
+
+generate
+
+project_vivado
