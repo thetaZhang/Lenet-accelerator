@@ -43,3 +43,22 @@ module DffPosRst #(
 
   assign q = q_reg;
 endmodule
+
+// Dff without reset
+module DffnoRst #(
+    parameter DATA_WIDTH = 1
+) (
+    input clk,
+
+    input  [DATA_WIDTH - 1 : 0] d,
+    output [DATA_WIDTH - 1 : 0] q
+);
+
+  reg [DATA_WIDTH - 1 : 0] q_reg;
+
+  always @(posedge clk) begin
+    q_reg <= d;
+  end
+
+  assign q = q_reg;
+endmodule
