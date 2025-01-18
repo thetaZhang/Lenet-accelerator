@@ -1,51 +1,55 @@
 // Sram.v
-// A parameterized SRAM with configurable channel count, capacity, data width, and address width.
+// A parameterized SRAM with 1 read and 1 write port, low asynchronous rst, synchronous wr and rd, high active csen
 
 `include "Dffs.v" // if include modules is not be added in the compile command, the module should be included here
 
 module Sram#(
     parameter DATA_WIDTH = 8,
     parameter ADDR_WIDTH = 8,
-    parameter CHANNEL = 1,
-    parameter SIZE = 256
+    parameter DATA_DEPTH = 256
 
 )(
-    input clk, 
-    
-    // data, addr and enable signal format:
-    // (MSB)[channel n, ... , channel 1, channel 0](LSB)
+    input clk,
+    input rst_n, 
+    input csen, //chip select enable
 
-    input [CHANNEL - 1 : 0]wr_en,
-    input [ADDR_WIDTH * CHANNEL - 1 : 0] wr_addr,
-    input [DATA_WIDTH * CHANNEL - 1 : 0] wr_data,
+    input wr_en,
+    input [ADDR_WIDTH - 1 : 0] wr_addr,
+    input [DATA_WIDTH - 1 : 0] wr_data,
 
     
-    input [CHANNEL - 1 : 0] rd_en,
-    input [ADDR_WIDTH * CHANNEL - 1 : 0] rd_addr,
-    output [DATA_WIDTH * CHANNEL - 1 : 0] rd_data 
+    input rd_en,
+    input [ADDR_WIDTH - 1 : 0] rd_addr,
+    output [DATA_WIDTH - 1 : 0] rd_data 
 );
 
-reg [DATA_WIDTH - 1 : 0] mem [CHANNEL - 1 : 0][SIZE - 1 : 0];
+reg [DATA_WIDTH - 1 : 0] mem [0 : DATA_DEPTH - 1];
 
-reg [DATA_WIDTH * CHANNEL - 1 : 0] rd_data_reg;
+reg [DATA_WIDTH - 1 : 0] rd_data_reg;
 
 assign rd_data = rd_data_reg;
 
-genvar i;
-generate
-    for (i = 0; i < CHANNEL; i = i + 1) begin : channel
-        always @(posedge clk) begin
-            if (wr_en[i]) 
-                mem[i][wr_addr] <= wr_data[(i + 1) * DATA_WIDTH - 1 : i * DATA_WIDTH];
-        end
+integer i;
 
-        always @(posedge clk) begin
-            if (rd_en[i]) 
-                rd_data_reg[(i + 1) * DATA_WIDTH - 1 : i * DATA_WIDTH] <= mem[i][rd_addr];
+// input
+always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        for (i = 0; i < DATA_DEPTH; i = i + 1) begin: memory_init
+            mem[i] <= {DATA_WIDTH{1'b0}};
         end
-        
+    end 
+    else if (csen_n && wr_en) begin
+        mem[wr_addr] <= wr_data;
     end
-endgenerate
+end
 
+// output
+always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        rd_data_reg <= {DATA_WIDTH{1'b0}};
+    end 
+    else if (rd_en & ~csen_n) begin
+        rd_data_reg <= mem[rd_addr];
+    end
 
 endmodule
