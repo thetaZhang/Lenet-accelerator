@@ -5,6 +5,7 @@ transcript
 *.out
 build
 
+*.vcd
 
 *.pyc
 

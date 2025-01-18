@@ -1,7 +1,6 @@
 // Sram.v
 // A parameterized SRAM with 1 read and 1 write port, low asynchronous rst, synchronous wr and rd, high active csen
 
-`include "Dffs.v" // if include modules is not be added in the compile command, the module should be included here
 
 module Sram#(
     parameter DATA_WIDTH = 8,
@@ -38,7 +37,7 @@ always @(posedge clk or negedge rst_n) begin
             mem[i] <= {DATA_WIDTH{1'b0}};
         end
     end 
-    else if (csen_n && wr_en) begin
+    else if (csen && wr_en) begin
         mem[wr_addr] <= wr_data;
     end
 end
@@ -48,8 +47,9 @@ always @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         rd_data_reg <= {DATA_WIDTH{1'b0}};
     end 
-    else if (rd_en & ~csen_n) begin
+    else if (rd_en && csen) begin
         rd_data_reg <= mem[rd_addr];
     end
+end
 
 endmodule
