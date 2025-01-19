@@ -16,8 +16,7 @@ module Sram_tb();
 
     Sram#(
         .DATA_WIDTH(8),
-        .ADDR_WIDTH(8),
-        .DATA_DEPTH(16)
+        .ADDR_WIDTH(8)
     ) sram(
         .clk(clk),
         .rst_n(rst_n),
@@ -40,7 +39,7 @@ module Sram_tb();
         wr_addr = 0;
         wr_data = 8'hFF;
         csen = 1;
-        rd_en = 1;
+        rd_en = 0;
         rd_addr = 0;
         #5
         clk = 1;
@@ -48,8 +47,8 @@ module Sram_tb();
         #5
 ;
         clk = 0;
-        wr_addr = 1;
-        wr_data = 8'hAA;
+        wr_en = 0;
+        rd_en = 1;
         rd_addr = 0;
         #5
         clk = 1;

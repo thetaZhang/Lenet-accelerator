@@ -4,9 +4,7 @@
 
 module Sram#(
     parameter DATA_WIDTH = 8,
-    parameter ADDR_WIDTH = 8,
-    parameter DATA_DEPTH = 256
-
+    parameter ADDR_WIDTH = 8
 )(
     input clk,
     input rst_n, 
@@ -21,6 +19,8 @@ module Sram#(
     input [ADDR_WIDTH - 1 : 0] rd_addr,
     output [DATA_WIDTH - 1 : 0] rd_data 
 );
+
+localparam DATA_DEPTH = 2 ** ADDR_WIDTH;
 
 reg [DATA_WIDTH - 1 : 0] mem [0 : DATA_DEPTH - 1];
 
@@ -45,7 +45,7 @@ end
 // output
 always @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
-        rd_data_reg <= {DATA_WIDTH{1'b0}};
+        rd_data_reg <= {DATA_WIDTH{1'bz}};
     end 
     else if (rd_en && csen) begin
         rd_data_reg <= mem[rd_addr];
