@@ -17,6 +17,8 @@ module Rom#(
 
     reg [DATA_WIDTH-1:0] data_reg;
 
+    assign data = data_reg;
+
     initial begin
         $readmemh(INIT_FILE, mem);
     end

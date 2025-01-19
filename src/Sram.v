@@ -30,10 +30,10 @@ assign rd_data = rd_data_reg;
 
 integer i;
 
-// input
+
 always @(posedge clk or negedge rst_n) begin
     if (~rst_n) begin
-        for (i = 0; i < DATA_DEPTH; i = i + 1) begin: memory_init
+        for (i = 0; i < DATA_DEPTH; i = i + 1) begin
             mem[i] <= {DATA_WIDTH{1'b0}};
         end
     end 
