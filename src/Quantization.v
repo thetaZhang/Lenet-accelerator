@@ -1,5 +1,6 @@
 // Quantization.v
 // quantization module
+// if overflow, saturate to max 
 
 module Quantization#(
     parameter INPUT_DATA_WIDTH = 16,
@@ -8,5 +9,8 @@ module Quantization#(
     input [INPUT_DATA_WIDTH - 1 : 0] data_in,
     output [OUTPUT_DATA_WIDTH - 1 : 0] data_out
 );
+
+assign data_out = (|data_in[INPUT_DATA_WIDTH - 1 : OUTPUT_DATA_WIDTH]) ? {OUTPUT_DATA_WIDTH{1'b1}} : data_in;
+
 
 endmodule

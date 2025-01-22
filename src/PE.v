@@ -8,16 +8,11 @@ module PE#(
     input clk,
     input rst_n,
 
-
     input [1 : 0] mode_ctrl, // 00: idle, 01: load weight, 10 or 11: compute
 
     input [DATA_WIDTH-1:0] data_in,
     input [DATA_WIDTH-1:0] weight_in,// only use when load weight
     input [DATA_WIDTH-1:0] partial_sum_in,
-
-    // flag of is weight has been loaded
-    input weight_ready_in,
-    output weight_ready, 
 
     output [DATA_WIDTH-1:0] data_out, // horizontal out
     output [DATA_WIDTH-1:0] weight_out, // vertical weight out, only use when load weight
@@ -38,14 +33,14 @@ module PE#(
 
     // weight load
     DffNegRstEn#(
-        .DATA_WIDTH(DATA_WIDTH+1),
-        .RST_VALUE({(DATA_WIDTH+1){1'b0}})
+        .DATA_WIDTH(DATA_WIDTH),
+        .RST_VALUE({(DATA_WIDTH){1'b0}})
     ) WeightReg(
         .clk(clk),
         .rst_n(rst_n),
         .en(mode_ctrl[0]&~mode_ctrl[1]),
-        .d({weight_ready_in,weight_in}),
-        .q({weight_ready,weight_out})
+        .d(weight_in),
+        .q(weight_out)
     );
 
     wire [DATA_WIDTH - 1 : 0] mac_res; 
