@@ -2,18 +2,18 @@
 
 module Rom#(
     parameter DATA_WIDTH = 8,
-    parameter ADDR_WIDTH = 8,
+    parameter DATA_DEPTH = 256,
     parameter INIT_FILE = "rom_init.txt"
 )(
     input clk,
     input rst_n,
 
     input csen,
-    input [ADDR_WIDTH-1:0] addr,
+    input [$clog2(DATA_DEPTH)-1:0] addr,
     output [DATA_WIDTH-1:0] data
 );
 
-    reg [DATA_WIDTH-1:0] mem[0:2**ADDR_WIDTH-1];
+    reg [DATA_WIDTH-1:0] mem[0:DATA_DEPTH-1];
 
     reg [DATA_WIDTH-1:0] data_reg;
 

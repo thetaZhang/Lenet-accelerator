@@ -11,14 +11,18 @@ module PE#(
     input [1 : 0] mode_ctrl, // 00: idle, 01: load weight, 10 or 11: compute
 
     input [DATA_WIDTH-1:0] data_in,
-    input [DATA_WIDTH-1:0] weight_in,// only use when load weight
-    input [DATA_WIDTH-1:0] partial_sum_in,
+    input [DATA_WIDTH-1:0] weight_sum_in,
 
-    output [DATA_WIDTH-1:0] data_out, // horizontal out
-    output [DATA_WIDTH-1:0] weight_out, // vertical weight out, only use when load weight
-    output [DATA_WIDTH-1:0] partial_sum_out //vertical partial sum out
-
+    output [DATA_WIDTH-1:0] data_out, // horizontal out 
+    output [DATA_WIDTH-1:0] weight_sum_out //vertical  out
 );
+
+    wire [DATA_WIDTH-1:0] weight_in, partial_sum_in, weight_out, partial_sum_out;
+
+    assign weight_in = weight_sum_in; 
+    assign partial_sum_in = weight_sum_in;
+    assign weight_sum_out = (mode_ctrl[1]) ? partial_sum_out : weight_out;
+
     // input data horizontal brodcast
     DffNegRstEn#(
         .DATA_WIDTH(DATA_WIDTH),
