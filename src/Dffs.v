@@ -70,6 +70,8 @@ module DffNegRstEnClr #(
     else if (en) q_reg <= d;
   end
 
+  assign q = q_reg;
+
 endmodule
 
 // Dff with asynchronous positive edge reset

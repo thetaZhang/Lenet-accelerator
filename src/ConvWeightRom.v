@@ -22,7 +22,7 @@ localparam ADDR_WIDTH = $clog2(KERNEL_SIZE);
 genvar i;
 generate
     for(i = 0; i < KERNEL_SIZE; i = i + 1) begin
-        `define INIT_FILE ({"cov_weight_init_rom_", i+ 8'h30,".txt"}) // 将索引转换为字符
+        `define INIT_FILE ({"cov_weight_init_rom_", i+ 8'h30,".txt"}) 
         Rom #(
             .DATA_WIDTH(DATA_WIDTH),
             .DATA_DEPTH(KERNEL_SIZE),

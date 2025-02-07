@@ -29,7 +29,8 @@ module PE#(
     wire [DATA_WIDTH - 1 : 0] weight_sum_reg_in;
     wire [DATA_WIDTH - 1 : 0] weight_sum_reg_out;
 
-    assign weight_sum_reg_in = (mode_ctrl === OS) ? mac_res_out : weight_sum_in;
+    assign weight_sum_reg_in = (mode_ctrl == OS) ? mac_res_out : weight_sum_in;
+    assign acc_out = (mode_ctrl == OS) ? weight_sum_reg_out : {DATA_WIDTH{1'bz}};
 
     // weight reg in WS, partial sum reg in OS
    DffNegRstEnClr #(
@@ -38,7 +39,7 @@ module PE#(
    ) weight_acc_reg (
         .clk(clk),
         .rst_n(rst_n),
-        .en(mode_ctrl === WS_LOAD || mode_ctrl === OS),
+        .en(mode_ctrl == WS_LOAD || mode_ctrl == OS),
         .clr(weight_clr),
         .d(weight_sum_reg_in),
         .q(weight_sum_reg_out)
@@ -50,9 +51,9 @@ module PE#(
     wire [DATA_WIDTH - 1 : 0] mac_res_out;
 
     assign mac_data_in = data_in;
-    assign mac_weight_in = (mode_ctrl === OS) ? weight_sum_in : weight_sum_reg_out;
-    assign mac_bias_in = (mode_ctrl === OS) ? weight_sum_reg_out : weight_sum_in;
-
+    assign mac_weight_in = (mode_ctrl == OS) ? weight_sum_in : weight_sum_reg_out;
+    assign mac_bias_in = (mode_ctrl == OS) ? weight_sum_reg_out : weight_sum_in;
+    
     // mac
     Mac #(
         .INPUT_DATA_WIDTH(DATA_WIDTH),
@@ -80,7 +81,7 @@ module PE#(
     wire [DATA_WIDTH - 1 : 0] vertical_reg_in;
     wire [DATA_WIDTH - 1 : 0] vertical_reg_out;
 
-    assign vertical_reg_in = (mode_ctrl === OS) ? weight_sum_in : mac_res_out;
+    assign vertical_reg_in = (mode_ctrl == OS) ? weight_sum_in : mac_res_out;
 
     // vertical out
     DffNegRstEn #(
@@ -95,7 +96,7 @@ module PE#(
     );
 
 
-   assign weight_sum_out = (mode_ctrl === WS_LOAD) ? weight_sum_reg_out : vertical_reg_out;
+   assign weight_sum_out = (mode_ctrl == WS_LOAD) ? weight_sum_reg_out : vertical_reg_out;
 
 
 endmodule
