@@ -15,11 +15,11 @@ module Mac#(
 
     assign mac_res = data_in * weight_in + bias_in;
 
-    // quantization
-    Quantization#(
+    // Round
+    Round#(
         .INPUT_DATA_WIDTH(INPUT_DATA_WIDTH * 2 + 1),
         .OUTPUT_DATA_WIDTH(OUTPUT_DATA_WIDTH)
-    ) QuantUnit(
+    ) RoundUnit(
         .data_in(mac_res),
         .data_out(res_out)
     );

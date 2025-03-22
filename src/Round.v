@@ -1,8 +1,8 @@
-// Quantization.v
-// quantization module
+// Round.v
+// round module
 // if overflow, saturate to max 
 
-module Quantization#(
+module Round#(
     parameter INPUT_DATA_WIDTH = 16,
     parameter OUTPUT_DATA_WIDTH = 8
 )(
